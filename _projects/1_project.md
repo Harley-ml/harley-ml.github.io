@@ -8,22 +8,23 @@ category: project
 related_publications: true
 ---
 
-**NOTE**: TinyWord does not use weight-tying, meaning its input and output embedding matrices are separate and untied. At this scale, that roughly doubles the parameter count dedicated to the vocabulary, making the model's performance less impressive than it appears. Furthermore, we plan to train a second version with weight-tying and a new architecture (Qwen3).
+> **NOTE:** TinyWord does not use weight-tying, meaning its input and output embedding matrices are separate and untied. At this scale, that roughly doubles the parameter count dedicated to the vocabulary, making the model's performance less impressive than it appears. Furthermore, we plan to train a second version with weight-tying and a new architecture (Qwen3).
 
-# Tiny-Word
+## Tiny-Word
 
 Tiny-Word is an extremely tiny Mistral-like model, approximately ~134k parameters. It generates English or Spanish words or word-like sequences.
 
 ## Architecture
 
-|        Key        | Value |
-| :---------------: | :---: |
-|    hidden_size    |   32  |
-|     num_layers    |   2   |
-|     num_heads     |   1   |
-|    num_kv_heads   |   1   |
-| intermediate_size |  256  |
-|     vocab_size    |  1200 |
+| Key | Value |
+| :---: | :---: |
+| hidden_size | 32 |
+| num_layers | 2 |
+| num_heads | 1 |
+| num_kv_heads | 1 |
+| intermediate_size | 256 |
+| vocab_size | 1200 |
+{:.table .table-bordered .table-sm}
 
 ## Training
 
@@ -31,23 +32,24 @@ Tiny-Word was trained on 753,232 unique words (entries), 3,225,398 tokens, and 7
 
 ### Dataset
 
-|           Key           |   Value   |
-| :---------------------: | :-------: |
-|     Entries (words)     |  753,232  |
-|          Tokens         | 3,225,398 |
-|        Characters       | 7,022,310 |
-|  Avg. Tokens Per Entry  |    ~4.2   |
-|   Avg. Words Per Entry  |     1     |
-|   Avg. Chars Per Entry  |    ~9.3   |
-|  Longest Entry (Tokens) |     36    |
-| Shortest Entry (Tokens) |     1     |
-|      English Words      |   ~660k   |
-|      Spanish Words      |    ~90k   |
+| Key | Value |
+| :---: | :---: |
+| Entries (words) | 753,232 |
+| Tokens | 3,225,398 |
+| Characters | 7,022,310 |
+| Avg. Tokens Per Entry | ~4.2 |
+| Avg. Words Per Entry | 1 |
+| Avg. Chars Per Entry | ~9.3 |
+| Longest Entry (Tokens) | 36 |
+| Shortest Entry (Tokens) | 1 |
+| English Words | ~660k |
+| Spanish Words | ~90k |
+{:.table .table-bordered .table-sm}
 
 ### Training Setup
 
 We trained the model for 6 epochs with a batch size of 128 and a gradient accumulation of 2.
-The chosen sliding_window was 64, even though the longest word is only 36 tokens, which is inefficient and suboptimal. However, this shouldn’t affect the model in any way; it only slows training down.
+The chosen sliding_window was 64, even though the longest word is only 36 tokens, which is inefficient and suboptimal. However, this shouldn't affect the model in any way; it only slows training down.
 
 #### Hardware
 
@@ -55,78 +57,51 @@ Tiny-Word was trained on Google Colaboratory, with 1 Nvidia Tesla T4 GPU, 15 GB 
 
 ### Training Results
 
-| step  | train_loss | val_loss | train_ppl | val_ppl |
-| :---- | :--------- | :------- | :-------- | :------ |
-| 1000  | 4.9619     | 4.5201   | ~143.0    | ~91.8   |
-| 3000  | 4.0093     | 3.9156   | ~55.0     | ~50.2   |
-| 4000  | 3.8464     | 3.7951   | ~46.8     | ~44.5   |
-| 6000  | 3.6814     | 3.6612   | ~39.7     | ~38.9   |
-| 7000  | 3.6329     | 3.6182   | ~37.8     | ~37.2   |
-| 9000  | 3.5684     | 3.5636   | ~35.5     | ~35.3   |
-| 10000 | 3.5452     | 3.5444   | ~34.7     | ~34.6   |
-| 12000 | 3.5139     | 3.5161   | ~33.6     | ~33.7   |
-| 15000 | 3.4784     | 3.4861   | ~32.4     | ~32.6   |
+| step | train_loss | val_loss | train_ppl | val_ppl |
+| :--- | :--- | :--- | :--- | :--- |
+| 1000 | 4.9619 | 4.5201 | ~143.0 | ~91.8 |
+| 3000 | 4.0093 | 3.9156 | ~55.0 | ~50.2 |
+| 4000 | 3.8464 | 3.7951 | ~46.8 | ~44.5 |
+| 6000 | 3.6814 | 3.6612 | ~39.7 | ~38.9 |
+| 7000 | 3.6329 | 3.6182 | ~37.8 | ~37.2 |
+| 9000 | 3.5684 | 3.5636 | ~35.5 | ~35.3 |
+| 10000 | 3.5452 | 3.5444 | ~34.7 | ~34.6 |
+| 12000 | 3.5139 | 3.5161 | ~33.6 | ~33.7 |
+| 15000 | 3.4784 | 3.4861 | ~32.4 | ~32.6 |
+{:.table .table-bordered .table-sm}
 
 Tiny-Word shows promising results, even at its tiny size (~134k parameters). Given the relatively easy task (predicting subwords inside single words), this is expected.
 
 ## Generation Examples
 
-Prompt:
-
-```
-d
-```
-
-Output:
-
+Prompt: `d`
 ```
 desmounder's's's
 ```
 
-Prompt:
-
-```
-0333333333
-```
-
-Output:
-
+Prompt: `0333333333`
 ```
 ruperperse'sf
 ```
 
-Prompt:
-
-```
-a
-```
-
-Output:
-
+Prompt: `a`
 ```
 utomatographic'sphon
 ```
 
-Prompt:
-
+Prompt: `e`
 ```
-e
-```
-
-Output:
-
-```
-equip’s’s’s
+equip's's's
 ```
 
-The model generates plausible word-like sequences that can be pronounced; sometimes it produces real words as well. It can handle almost all input; even if it’s nonsensical, it’ll still try to generate a word.
+The model generates plausible word-like sequences that can be pronounced; sometimes it produces real words as well. It can handle almost all input; even if it's nonsensical, it'll still try to generate a word.
 
 ## Limitations
 
 1. It does not generate sentences, prose, code, or anything besides a single word-like sequence.
 2. It cannot reason or produce complex language.
-3. It often appends common artifacts after the word is generated, such as: "'s", "'sphon", etc.
-4. Most generated words aren’t real and instead reflect the lexicon and morphology of the English and Spanish languages.
+3. It often appends common artifacts after the word is generated, such as: `'s`, `'sphon`, etc.
+4. Most generated words aren't real and instead reflect the lexicon and morphology of the English and Spanish languages.
 
 ## Quick Demo
 
@@ -192,7 +167,6 @@ def load_model(path: str, device: str):
     model.eval()
     return model
 
-# Simple nucleus/top-p filtering for a single logits vector
 def top_p_filtering(logits: torch.Tensor, top_p: float, min_keep: int = 1) -> torch.Tensor:
     if top_p <= 0 or top_p >= 1.0:
         return logits
@@ -210,7 +184,6 @@ def top_p_filtering(logits: torch.Tensor, top_p: float, min_keep: int = 1) -> to
     filtered = sorted_logits.masked_fill(~mask, -float("inf"))
     return torch.empty_like(filtered).scatter_(0, sorted_idx, filtered)
 
-# Manual streaming generator (single-batch)
 def manual_stream_generate(model, tokenizer, prompt: str, device: str,
                            max_new_tokens: int = 64, temperature: float = 1.0, top_p: float = 0.9,
                            eos_token_id: Optional[int] = None):
@@ -225,12 +198,11 @@ def manual_stream_generate(model, tokenizer, prompt: str, device: str,
         out = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=True)
         past = getattr(out, "past_key_values", None)
 
-    # start sampling tokens
     next_input = input_ids[:, -1:].to(device) if past is not None else input_ids.to(device)
     for _ in range(max_new_tokens):
         with torch.no_grad():
             out = model(input_ids=next_input, past_key_values=past, use_cache=True)
-            logits = out.logits[:, -1, :]  # (batch, vocab)
+            logits = out.logits[:, -1, :]
             past = getattr(out, "past_key_values", past)
 
             if temperature != 1.0:
@@ -250,12 +222,11 @@ def manual_stream_generate(model, tokenizer, prompt: str, device: str,
 
 def has_text_streamer():
     try:
-        from transformers import TextStreamer  # type: ignore
+        from transformers import TextStreamer
         return True
     except Exception:
         return False
 
-# tiny REPL state
 class State:
     def __init__(self):
         self.max_new_tokens = DEFAULT_MAX_NEW_TOKENS
@@ -281,20 +252,14 @@ def handle_generation(model, tokenizer, prompt: str, device: str, state: State):
                            pad_token_id=tokenizer.pad_token_id,
                            eos_token_id=tokenizer.eos_token_id,
                            streamer=streamer)
-            print("")  # newline after streamer
+            print("")
             return
-        # fallback: manual streaming
         gen = manual_stream_generate(model, tokenizer, prompt, device,
                                      max_new_tokens=state.max_new_tokens,
                                      temperature=state.temperature,
                                      top_p=state.top_p,
                                      eos_token_id=eos)
-        if state.full_output:
-            print("PROMPT:", prompt)
-            print("GENERATING:", end=" ", flush=True)
-        else:
-            print("GENERATING:", end=" ", flush=True)
-
+        print("GENERATING:", end=" ", flush=True)
         count = 0
         t0 = time.time()
         for _tok_id, tok_text in gen:
@@ -371,7 +336,6 @@ def repl(model, tokenizer, device):
         if state.stream:
             handle_generation(model, tokenizer, raw, device, state)
         else:
-            # non-streaming generate
             try:
                 inputs = tokenizer(raw, return_tensors="pt", truncation=True, add_special_tokens=False)
                 inputs = {k: v.to(device) for k, v in inputs.items() if isinstance(v, torch.Tensor)}
@@ -400,8 +364,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### Related Models
-
+## Related Models
 
 1. [PicoWord](https://huggingface.co/Harley-ml/PicoWord-5k)
 2. [MicroWord](https://huggingface.co/Harley-ml/MicroWord-23k)
